@@ -161,9 +161,17 @@ public final class ExternalDataUtil {
                     evaluationContext.addFunctionHandler(new ExternalDataHandlerSearch(externalDataManager, displayColumns, value, imageColumn));
 
                     Object eval = xPathFuncExpr.eval(formInstance, evaluationContext);
-                    if (eval.getClass().isAssignableFrom(ArrayList.class)) {
+
+                    if (eval.getClass().isAssignableFrom(ArrayList.class) || eval.getClass().equals(Vector.class)) {
                        @SuppressWarnings("unchecked")
-                     List<SelectChoice> dynamicChoices = (ArrayList<SelectChoice>) eval;
+                        List<SelectChoice> dynamicChoices = new ArrayList<SelectChoice>();
+
+                        if (eval.getClass().equals(Vector.class)){;
+                            dynamicChoices  = vectorToArrayList((Vector)eval);
+                        } else {
+                            dynamicChoices  = (ArrayList<SelectChoice>) eval;
+                        }
+
                         for (SelectChoice dynamicChoice : dynamicChoices) {
                             returnedChoices.add(dynamicChoice);
                         }
@@ -176,6 +184,13 @@ public final class ExternalDataUtil {
         } catch (Exception e) {
             throw new ExternalDataException(e.getMessage(), e);
         }
+    }
+
+
+    public static ArrayList vectorToArrayList(Vector vector){
+        if (vector == null){return null;}
+        //List<Foo> list = ;
+        return new ArrayList<SelectChoice>(vector);
     }
 
     /**
