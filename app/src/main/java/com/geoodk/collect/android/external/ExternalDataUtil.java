@@ -162,16 +162,15 @@ public final class ExternalDataUtil {
 
                     Object eval = xPathFuncExpr.eval(formInstance, evaluationContext);
 
-                    if (eval.getClass().isAssignableFrom(ArrayList.class) || eval.getClass().equals(Vector.class)) {
+                    if (eval.getClass().isAssignableFrom(ArrayList.class)) {
                        @SuppressWarnings("unchecked")
-                        List<SelectChoice> dynamicChoices = new ArrayList<SelectChoice>();
-
-                        if (eval.getClass().equals(Vector.class)){;
-                            dynamicChoices  = vectorToArrayList((Vector)eval);
-                        } else {
-                            dynamicChoices  = (ArrayList<SelectChoice>) eval;
+                        List<SelectChoice> dynamicChoices = (ArrayList<SelectChoice>) eval;
+                        for (SelectChoice dynamicChoice : dynamicChoices) {
+                            returnedChoices.add(dynamicChoice);
                         }
-
+                    } else if (eval.getClass().equals(Vector.class)) {
+                        @SuppressWarnings("unchecked")
+                        List<SelectChoice> dynamicChoices = vectorToArrayList((Vector) eval);
                         for (SelectChoice dynamicChoice : dynamicChoices) {
                             returnedChoices.add(dynamicChoice);
                         }
